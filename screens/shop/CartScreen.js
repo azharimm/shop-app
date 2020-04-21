@@ -2,32 +2,51 @@ import React from 'react';
 import { View, Text, FlatList, StyleSheet, Button } from 'react-native';
 import { useSelector } from 'react-redux';
 import Color from '../../constants/Color';
+import CartItem from '../../components/shop/CartItem';
 
 const CartScreen = (props) => {
     const cartTotalAmount = useSelector((state) => state.carts.totalAmount);
-    const cartItems = useSelector(state => {
+    const cartItems = useSelector((state) => {
         const transfromCartItems = [];
-        for (const key in state.carts.carts) {
+        for (const key in state.carts.items) {
             transfromCartItems.push({
                 productId: key,
-                productTitle: state.cart.items[key].productTitle,
-                productPrice: state.cart.items[key].productPrice,
+                productTitle: state.carts.items[key].productTitle,
+                productPrice: state.carts.items[key].productPrice,
                 quantity: state.carts.items[key].quantity,
-                sum: state.carts.items[key].sum,
-            })
+                sum: state.carts.items[key].sum
+            });
         }
-        return transfromCartItems
-    })
+        return transfromCartItems;
+    });
     return (
         <View style={styles.screen}>
             <View style={styles.summary}>
                 <Text style={styles.summaryText}>
-                    Total: <Text style={styles.amount}>${cartTotalAmount.toFixed(2)}</Text>
+                    Total:{' '}
+                    <Text style={styles.amount}>
+                        ${cartTotalAmount.toFixed(2)}
+                    </Text>
                 </Text>
-                <Button color={Color.accent} title="Order Now" disabled={cartItems.length === 0} />
+                <Button
+                    color={Color.accent}
+                    title="Order Now"
+                    disabled={cartItems.length === 0}
+                />
             </View>
             <View>
-                <FlatList />
+                <FlatList
+                    data={cartItems}
+                    keyExtractor={(item) => item.productId}
+                    renderItem={(itemData) => (
+                        <CartItem
+                            quantity={itemData.item.quantity}
+                            title={itemData.item.productTitle}
+                            amount={itemData.item.sum}
+                            onRemote={() => {}}
+                        />
+                    )}
+                />
             </View>
         </View>
     );
