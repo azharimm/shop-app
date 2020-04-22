@@ -18,9 +18,7 @@ const CartItem = (props) => {
             <View style={styles.itemData}>
                 <Text style={styles.mainText}>${props.amount}</Text>
                 <TouchableOpacity
-                    onPress={() => {
-                        props.onRemove;
-                    }}
+                    onPress={props.onRemove}
                     style={styles.deleteButton}
                 >
                     <Ionicons
