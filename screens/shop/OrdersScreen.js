@@ -7,7 +7,6 @@ import OrderItem from '../../components/shop/OrderItem';
 
 const OrdersScreen = (props) => {
     const orders = useSelector((state) => state.orders.orders);
-    console.log(orders);
 
     return (
         <FlatList
@@ -15,6 +14,7 @@ const OrdersScreen = (props) => {
             keyExtractor={(item) => item.id}
             renderItem={(itemData) => (
                 <OrderItem
+                    items={itemData.item}
                     amount={itemData.item.totalAmount}
                     date={itemData.item.readableDate}
                 />
