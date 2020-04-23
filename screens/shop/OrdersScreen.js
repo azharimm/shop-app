@@ -3,23 +3,27 @@ import { useSelector } from 'react-redux';
 import { FlatList, Platform, Text } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/UI/HeaderButton';
+import OrderItem from '../../components/shop/OrderItem';
 
 const OrdersScreen = (props) => {
     const orders = useSelector((state) => state.orders.orders);
-    console.log(orders)
+    console.log(orders);
 
     return (
         <FlatList
             data={orders}
             keyExtractor={(item) => item.id}
             renderItem={(itemData) => (
-                <Text>{itemData.item.totalAmount}</Text>
+                <OrderItem
+                    amount={itemData.item.totalAmount}
+                    date={itemData.item.readableDate}
+                />
             )}
         />
     );
 };
 
-OrdersScreen.navigationOptions = navData => {
+OrdersScreen.navigationOptions = (navData) => {
     return {
         headerTitle: 'Your Orders',
         headerLeft: () => (
@@ -35,7 +39,7 @@ OrdersScreen.navigationOptions = navData => {
                 />
             </HeaderButtons>
         )
-    }
-}
+    };
+};
 
 export default OrdersScreen;
