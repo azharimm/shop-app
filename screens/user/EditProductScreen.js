@@ -5,15 +5,16 @@ import {
     Text,
     TextInput,
     StyleSheet,
-    Platform
+    Platform,
+    Alert
 } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import HeaderButton from '../../components/UI/HeaderButton';
-import * as productActions from '../../store/actions/products'
+import * as productActions from '../../store/actions/products';
 
 const EditProductScreen = (props) => {
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
     const prodId = props.navigation.getParam('productId');
     const editedProduct = useSelector((state) =>
         state.products.userProducts.find((prod) => prod.id === prodId)
@@ -31,11 +32,26 @@ const EditProductScreen = (props) => {
     );
 
     const submitHandler = useCallback(() => {
-        if(editedProduct) {
-            dispatch(productActions.updateProduct(prodId, title, description, imageUrl))
-        }else {
-            dispatch(productActions.createProduct(title, description, imageUrl, +price))
+        if (editedProduct) {
+            dispatch(
+                productActions.updateProduct(
+                    prodId,
+                    title,
+                    description,
+                    imageUrl
+                )
+            );
+        } else {
+            dispatch(
+                productActions.createProduct(
+                    title,
+                    description,
+                    imageUrl,
+                    +price
+                )
+            );
         }
+        props.navigation.goBack();
     }, [dispatch, prodId, title, description, imageUrl, price]);
 
     useEffect(() => {
