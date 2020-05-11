@@ -23,15 +23,26 @@ const ProductsOverviewScreen = (props) => {
     const dispatch = useDispatch();
 
     const loadProducts = useCallback(async () => {
+        console.log("LOAD PRODUCT")
         setError(null);
         setIsLoading(true);
         try {
             await dispatch(ProductAction.fetchProducts());
-        }catch(err) {
-            setError(err.message)
+        } catch (err) {
+            setError(err.message);
         }
         setIsLoading(false);
     }, [dispatch, setIsLoading, setError]);
+
+    useEffect(() => {
+        const willFocusSub = props.navigation.addListener(
+            'willFocus',
+            loadProducts
+        );
+        return () => {
+            willFocusSub.remove();
+        };
+    }, [loadProducts]);
 
     useEffect(() => {
         loadProducts();
@@ -44,11 +55,15 @@ const ProductsOverviewScreen = (props) => {
         });
     };
 
-    if(error) {
+    if (error) {
         return (
             <View style={styles.centered}>
                 <Text>An error occured!</Text>
-                <Button title="Try Again" onPress={loadProducts} color={Color.primary} />
+                <Button
+                    title="Try Again"
+                    onPress={loadProducts}
+                    color={Color.primary}
+                />
             </View>
         );
     }
@@ -61,10 +76,12 @@ const ProductsOverviewScreen = (props) => {
         );
     }
 
-    if(!isLoading && products.length === 0 ) {
-        return <View style={styles.centered}>
-            <Text>No products found. Maybe start adding some.</Text>
-        </View>
+    if (!isLoading && products.length === 0) {
+        return (
+            <View style={styles.centered}>
+                <Text>No products found. Maybe start adding some.</Text>
+            </View>
+        );
     }
     return (
         <FlatList
@@ -146,6 +163,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     }
-})
+});
 
 export default ProductsOverviewScreen;
