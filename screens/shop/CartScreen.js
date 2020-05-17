@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, FlatList, StyleSheet, Button } from 'react-native';
+import React, {useState} from 'react';
+import { View, Text, FlatList, StyleSheet, Button, ActivityIndicator } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import Color from '../../constants/Color';
 import CartItem from '../../components/shop/CartItem';
@@ -8,6 +8,7 @@ import * as orderActions from '../../store/actions/orders'
 import Card from '../../components/UI/Card'
 
 const CartScreen = (props) => {
+    const [isLoading, setIsLoading] = useState(false)
     const cartTotalAmount = useSelector((state) => state.carts.totalAmount);
     const cartItems = useSelector((state) => {
         const transfromCartItems = [];
@@ -24,6 +25,12 @@ const CartScreen = (props) => {
     });
     const dispatch = useDispatch()
 
+    const sendOrderHandler = async () => {
+        setIsLoading(true)
+        await dispatch(orderActions.addOrder(cartItems, cartTotalAmount))
+        setIsLoading(false)
+    }
+
     return (
         <View style={styles.screen}>
             <Card style={styles.summary}>
@@ -33,12 +40,18 @@ const CartScreen = (props) => {
                         ${Math.round(cartTotalAmount.toFixed(2) * 100) / 100}
                     </Text>
                 </Text>
-                <Button
-                    color={Color.accent}
-                    title="Order Now"
-                    disabled={cartItems.length === 0}
-                    onPress={() => dispatch(orderActions.addOrder(cartItems, cartTotalAmount))}
-                />
+                {isLoading ? (
+                    <View>
+                        <ActivityIndicator size="small" color={Color.primary} />
+                    </View>
+                ): (
+                    <Button
+                        color={Color.accent}
+                        title="Order Now"
+                        disabled={cartItems.length === 0}
+                        onPress={sendOrderHandler}
+                    />
+                )}
             </Card>
             <View>
                 <FlatList
