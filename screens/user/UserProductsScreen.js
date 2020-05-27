@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { FlatList, Platform, Button, Alert } from 'react-native';
+import { FlatList, Platform, Button, Alert, View, Text } from 'react-native';
 import { HeaderButtons, Item } from 'react-navigation-header-buttons';
 import ProductItem from '../../components/shop/ProductItem';
 import HeaderButton from '../../components/UI/HeaderButton';
@@ -22,6 +22,12 @@ const UserProductsScreen = (props) => {
                 dispatch(ProductActions.deleteProduct(id))}
             }
         ])
+    }
+
+    if(userProducts.length === 0) {
+        return <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+            <Text>No User Products Founds. Maybe create some?</Text>
+        </View>
     }
 
     return (
